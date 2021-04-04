@@ -1,0 +1,42 @@
+﻿@page "/deletecontact/{CurrentID}"
+@using BlazorCRUD.Data
+@inject ContactLists objContactLists
+@inject NavigationManager NavigationManager
+
+<h3>DeleteContact</h3>
+<hr />
+
+<h4>
+    Are you sure you want to delete this?
+</h4>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <input type="button" class="btn btn-danger" @onclick="@DeleteContacts" value="Yes" />
+            <input type="button" class="btn btn-primary" @onclick="@Cancel" value="No" />
+        </div>
+    </div>
+</div>
+@code {
+    Contact objContact = new Contact();
+    [Parameter]
+    public Guid CurrentID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        objContact = await Task.Run(() => objContactLists.GetContactsById(CurrentID));
+    }
+
+    protected void DeleteContacts()
+    {
+        objContactLists.DeleteContact(objContact);
+        NavigationManager.NavigateTo("Contacts");
+
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Contacts");
+    }
+}
